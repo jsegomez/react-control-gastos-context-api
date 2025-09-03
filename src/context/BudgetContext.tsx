@@ -16,6 +16,7 @@ export const BudgetProvider = ({ children } : BudgetProviderProps ) => {
 
     useEffect(() => {
         localStorage.setItem('budget', state.budget.toString());
+        console.log(state);
     }, [state]);
 
     return(

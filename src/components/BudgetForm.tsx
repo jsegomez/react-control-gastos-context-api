@@ -1,30 +1,21 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import { useBudget } from "../hooks/useBudget";
+import { sanitizeDecimalNumber } from "../helpers";
 
 export default function BudgetForm() {
-    const [budget, setBudget] = useState('0');
+    const [budget, setBudget] = useState('');
     const { dispatch } = useBudget();
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
-        let sanitizedBudget = e.target.value.replace(/[^0-9.]/g, '');          
+        const sanitizedBudget = sanitizeDecimalNumber(e.target.value);
         
-        const parts = sanitizedBudget.split('.');
-        if (parts.length > 2) {
-            sanitizedBudget = parts[0] + '.' + parts.slice(1).join('');
-        }
-        
-        if (sanitizedBudget === '' || sanitizedBudget === '.') sanitizedBudget = '0';
-        if (sanitizedBudget.length > 1 && !sanitizedBudget.includes('.')) {
-            sanitizedBudget = sanitizedBudget.replace(/^0+/, '') || '0';
-        }
-        
-        setBudget(sanitizedBudget);
+        setBudget(sanitizedBudget.toString());
     }
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();        
-        dispatch({ type: 'DEFINE_BUDGET', payload: { budget: Number(budget) } });
+        dispatch({ type: 'DEFINE_BUDGET', payload: { budget: Number(budget) } });        
     }
 
     return (

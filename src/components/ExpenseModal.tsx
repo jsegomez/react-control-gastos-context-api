@@ -19,8 +19,8 @@ export default function ExpenseModal() {
         </button>
       </div>
 
-      <Transition appear show={state.modal} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={() => { dispatch({ type: 'HIDE_MODAL' }) }}>
+      <Transition appear show={state.modal} as={Fragment} >
+        <Dialog as="div" className="relative z-10" onClose={() => {}}>
           <TransitionChild
             as={Fragment}
             enter="ease-out duration-300"

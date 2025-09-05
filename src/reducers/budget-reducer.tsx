@@ -6,6 +6,7 @@ export type BudgetAction =
     { type: 'SHOW_MODAL' } |
     { type: 'HIDE_MODAL' } |
     { type: 'ADD_EXPENSE', payload: { expense: DraftExpense } } |
+    { type: 'DELETE_EXPENSE', payload: { id: string } } |    
     { type: 'RESET_BUDGET' }
     
 export type BudgetState = {
@@ -61,6 +62,11 @@ export const budgetReducer = (state: BudgetState, action: BudgetAction) => {
                     ...state,
                     expenses: [...state.expenses, expense]
                 }
+            }
+        case 'DELETE_EXPENSE':
+            return {
+                ...state,
+                expenses: state.expenses.filter(expense => expense.id !== action.payload.id)
             }
         default:
             return state;

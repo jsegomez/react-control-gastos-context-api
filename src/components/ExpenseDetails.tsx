@@ -13,7 +13,7 @@ export default function ExpenseDetails({ expense }: ExpenseDetailsProps) {
   console.log(categoryInfo?.icon);
   
   return (
-    <div className="bg-white shadow-lg p-5 w-full border-gray-200 border-b rounded-md flex gap-5 items-center">
+    <div className="bg-white shadow-lg p-5 w-full border-gray-200 border-b rounded-md flex gap-5 items-center select-none">
         <div>
           <img className="w-14" src={`/icono_${categoryInfo?.icon}.svg`} alt={categoryInfo?.name} />
         </div>

@@ -46,6 +46,8 @@ export default function ExpenseForm() {
         <form className="space-y-5" onSubmit={ handleSubmit }>
             <legend className="uppercase text-center font-black text-2xl border-b-4 py-2 border-blue-500">Nuevo gasto</legend>
 
+            { error && <ErrorMessage>Todos los campos son obligatorios</ErrorMessage> }
+
             <div className="flex flex-col gap-2">
                 <label htmlFor="expenseName" className="text-xl">Nombre del gasto</label>
                 <input
@@ -109,7 +111,12 @@ export default function ExpenseForm() {
                 value="Registrar gasto"
             />
 
-            { error && <ErrorMessage>Todos los campos son obligatorios</ErrorMessage> }
+            <button                
+                className="bg-red-600 cursor-pointer text-white p-2 w-full uppercase font-bold rounded-lg"
+                onClick={() => dispatch({ type: 'HIDE_MODAL' })}
+            >
+                Cancelar
+            </button>
         </form>
     )
 }

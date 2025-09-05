@@ -15,8 +15,7 @@ export const BudgetProvider = ({ children } : BudgetProviderProps ) => {
     const [state, dispatch] = useReducer(budgetReducer, initialState);
 
     useEffect(() => {
-        localStorage.setItem('budget', state.budget.toString());
-        console.log(state);
+        localStorage.setItem('budget', state.budget.toString());        
     }, [state]);
 
     return(

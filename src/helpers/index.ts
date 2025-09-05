@@ -21,3 +21,14 @@ export function sanitizeDecimalNumber(amount: string):number {
     }
     return Number(sanitizedValue);
 }
+
+export function formatDate(date: string) {   
+    if (!date) return '';
+    const dateFormatted = new Date(date);
+    
+    return new Intl.DateTimeFormat('es-SV', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    }).format(dateFormatted);
+}

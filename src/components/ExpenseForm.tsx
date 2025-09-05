@@ -1,12 +1,17 @@
-import { categories } from "../data/categories";
-import DatePicker from 'react-date-picker';
-import 'react-date-picker/dist/DatePicker.css';
 import 'react-calendar/dist/Calendar.css';
-import { useEffect, useState, type ChangeEvent } from "react";
-import type { DraftExpense, Value } from "../types";
+import 'react-date-picker/dist/DatePicker.css';
+import { useState, type ChangeEvent, type FormEvent } from "react";
+import DatePicker from 'react-date-picker';
+
+import { categories } from "../data/categories";
 import { sanitizeDecimalNumber } from "../helpers";
+import { useBudget } from "../hooks/useBudget";
+import ErrorMessage from './ErrorMessage';
+import type { DraftExpense, Value } from "../types";
 
 export default function ExpenseForm() {
+    const { dispatch } = useBudget();
+    const [error, setError] = useState<boolean>(false);
     const [expense, setExpense] = useState<DraftExpense>({
         expenseName: '',
         amount: null,
@@ -18,18 +23,27 @@ export default function ExpenseForm() {
         setExpense({ ...expense, date: value });
     }
 
-    useEffect(() => {
-        console.log(expense);
-    }, [expense]);
-
     const handleFormChange = (event: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) => {
         const target = event.target.id;
         const value = target == 'amount' ? sanitizeDecimalNumber(event.target.value) : event.target.value;        
         setExpense({ ...expense, [target]: value });
     }
 
-    return (
-        <form className="space-y-5">
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const isSomeFieldEmpty = Object.values(expense).some(value => value === '' || value === null || value === 0);        
+        if(isSomeFieldEmpty) {
+            
+            setError(true);
+            return;
+        }
+        setError(false);
+        dispatch({ type: 'ADD_EXPENSE', payload: { expense } });
+        dispatch({ type: 'HIDE_MODAL' });
+    }
+
+    return (        
+        <form className="space-y-5" onSubmit={ handleSubmit }>
             <legend className="uppercase text-center font-black text-2xl border-b-4 py-2 border-blue-500">Nuevo gasto</legend>
 
             <div className="flex flex-col gap-2">
@@ -95,7 +109,7 @@ export default function ExpenseForm() {
                 value="Registrar gasto"
             />
 
-
+            { error && <ErrorMessage>Todos los campos son obligatorios</ErrorMessage> }
         </form>
     )
 }

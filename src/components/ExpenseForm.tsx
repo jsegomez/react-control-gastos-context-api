@@ -1,6 +1,6 @@
 import 'react-calendar/dist/Calendar.css';
 import 'react-date-picker/dist/DatePicker.css';
-import { useState, type ChangeEvent, type FormEvent } from "react";
+import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import DatePicker from 'react-date-picker';
 
 import { categories } from "../data/categories";
@@ -10,7 +10,7 @@ import ErrorMessage from './ErrorMessage';
 import type { DraftExpense, Value } from "../types";
 
 export default function ExpenseForm() {
-    const { dispatch } = useBudget();
+    const { dispatch, state } = useBudget();
     const [error, setError] = useState<boolean>(false);
     const [expense, setExpense] = useState<DraftExpense>({
         expenseName: '',
@@ -18,6 +18,12 @@ export default function ExpenseForm() {
         category: '',
         date: new Date(),
     });
+
+    useEffect(() => {
+        if(state.editingExpense) {
+            setExpense(state.editingExpense);
+        }
+    }, [state.editingExpense]);
 
     const handleChangeDate = (value: Value) => {
         setExpense({ ...expense, date: value });
@@ -112,8 +118,9 @@ export default function ExpenseForm() {
             />
 
             <button                
+                type="button"
                 className="bg-red-600 cursor-pointer text-white p-2 w-full uppercase font-bold rounded-lg"
-                onClick={() => dispatch({ type: 'HIDE_MODAL' })}
+                onClick={() => dispatch({ type: 'CANCEL_EDIT_EXPENSE' })}
             >
                 Cancelar
             </button>

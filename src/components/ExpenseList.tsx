@@ -15,12 +15,11 @@ import type { Expense } from "../types";
 
 export default function ExpenseList() {
     const { state, dispatch } = useBudget();
-
     const isEmpty = useMemo(()=> state.expenses.length === 0, [state.expenses]);
 
-    const leadingActions = () => (
+    const leadingActions = (expense: Expense) => (
         <LeadingActions>
-            <SwipeAction onClick={() => console.info('swipe action triggered')}>
+            <SwipeAction onClick={() => dispatch({ type: 'EDIT_EXPENSE', payload: { expense } })}>
                 Editar
             </SwipeAction>
         </LeadingActions>
@@ -51,7 +50,7 @@ export default function ExpenseList() {
                                     return (
                                         <SwipeableListItem
                                             key={expense.id}
-                                            leadingActions={leadingActions()} 
+                                            leadingActions={leadingActions(expense)} 
                                             trailingActions={trailingActions(expense)}                                            
                                             maxSwipe={30}                                            
                                         >

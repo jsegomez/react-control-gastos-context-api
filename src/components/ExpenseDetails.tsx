@@ -9,8 +9,7 @@ type ExpenseDetailsProps = {
 }
 
 export default function ExpenseDetails({ expense }: ExpenseDetailsProps) {
-  const categoryInfo = useMemo(()=> categories.find(category => category.id === expense.category), [expense.category]);
-  console.log(categoryInfo?.icon);
+  const categoryInfo = useMemo(()=> categories.find(category => category.id === expense.category), [expense.category]);  
   
   return (
     <div className="bg-white shadow-lg p-5 w-full border-gray-200 border-b rounded-md flex gap-5 items-center select-none">

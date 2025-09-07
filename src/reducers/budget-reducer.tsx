@@ -9,6 +9,7 @@ export type BudgetAction =
     { type: 'DELETE_EXPENSE', payload: { id: string } } |   
     { type: 'EDIT_EXPENSE', payload: { expense: Expense } } |    
     { type: 'UPDATE_EXPENSE', payload: { expense: Expense } } |
+    { type: 'SET_FILTER', payload: { filter: Expense['id'] | null } } | 
     { type: 'RESET_BUDGET' }
     
 export type BudgetState = {
@@ -16,6 +17,7 @@ export type BudgetState = {
     modal: boolean
     expenses: Expense[]
     editingExpense: Expense | null;
+    filter: Expense['id'] | null
 }
 
 const initialBudget = (): BudgetState['budget'] => {
@@ -34,7 +36,8 @@ export const initialState: BudgetState = {
     budget: initialBudget(),
     modal: false,
     expenses: initialExpenses(),
-    editingExpense: null
+    editingExpense: null,
+    filter: null
 }
 
 const createExpense = (expense: DraftExpense) => {
@@ -96,6 +99,14 @@ export const budgetReducer = (state: BudgetState, action: BudgetAction) => {
                     expenses: state.expenses.map(expense => expense.id === action.payload.expense.id ? action.payload.expense : expense),                    
                 }
             }
+        case 'SET_FILTER': {
+            {
+                return {
+                    ...state,
+                    filter: action.payload.filter
+                }
+            }
+        }
         default:
             return state;
     }

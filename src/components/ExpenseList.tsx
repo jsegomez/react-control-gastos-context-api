@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
     LeadingActions,
     SwipeableList,
@@ -16,6 +16,19 @@ import type { Expense } from "../types";
 export default function ExpenseList() {
     const { state, dispatch } = useBudget();
     const isEmpty = useMemo(()=> state.expenses.length === 0, [state.expenses]);
+    const [expenseFilter, setExpenseFilter] = useState(state.expenses);
+
+    useEffect(() => {
+        if(state.filter) {
+            const filtered = state.expenses.filter((category) => category.category == state.filter?.toString())
+            console.log(state.filter)
+            setExpenseFilter(filtered);
+        }else{
+            setExpenseFilter(state.expenses)
+        }
+
+    },[state.filter, state.expenses])
+
 
     const leadingActions = (expense: Expense) => (
         <LeadingActions>
@@ -46,7 +59,7 @@ export default function ExpenseList() {
                             fullSwipe={false}                            
                         >
                             {
-                                state.expenses.map((expense)=> {
+                                expenseFilter.map((expense)=> {
                                     return (
                                         <SwipeableListItem
                                             key={expense.id}

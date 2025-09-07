@@ -9,7 +9,7 @@ import { useBudget } from "../hooks/useBudget";
 import ErrorMessage from './ErrorMessage';
 import type { DraftExpense, Value } from "../types";
 
-export default function ExpenseForm() {
+export default function ExpenseForm() {    
     const { dispatch, state, avaliableBudget } = useBudget();
     const [error, setError] = useState<boolean>(false);
     const [expense, setExpense] = useState<DraftExpense>({
@@ -18,6 +18,7 @@ export default function ExpenseForm() {
         category: '',
         date: new Date(),
     });
+    const isButtonDisabled = avaliableBudget < expense.amount!;
 
     useEffect(() => {
         if(state.editingExpense) setExpense(state.editingExpense);
@@ -40,6 +41,8 @@ export default function ExpenseForm() {
             setError(true);
             return;
         }
+
+        if(isButtonDisabled) return;
         setError(false);
 
         if(state.editingExpense) editExpense();
@@ -60,6 +63,7 @@ export default function ExpenseForm() {
             <legend className="uppercase text-center font-black text-2xl border-b-4 py-2 border-blue-500">{ state.editingExpense ? 'Actualizar gasto' : 'Nuevo gasto' }</legend>
 
             { error && <ErrorMessage>Todos los campos son obligatorios</ErrorMessage> }
+            { isButtonDisabled && <ErrorMessage>Gasto sobrepasa presupuesto</ErrorMessage> }
 
             <div className="flex flex-col gap-2">
                 <label htmlFor="expenseName" className="text-xl">Nombre del gasto</label>
@@ -120,8 +124,8 @@ export default function ExpenseForm() {
 
             <input
                 type="submit"
-                className="bg-blue-600 cursor-pointer text-white p-2 w-full uppercase font-bold rounded-lg"
-                disabled={avaliableBudget > expense.amount!}
+                disabled={isButtonDisabled}
+                className="bg-blue-600 cursor-pointer text-white p-2 w-full uppercase font-bold rounded-lg disabled:bg-blue-300 disabled:cursor-not-allowed"                
                 value={ state.editingExpense ? 'Actualizar gasto' : 'Registrar gasto' }
             />
 

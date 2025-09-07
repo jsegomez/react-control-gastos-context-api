@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import BudgetForm from "./components/BudgetForm"
 import BudgetTracker from "./components/BudgetTracker";
 import ExpenseList from "./components/ExpenseList";
@@ -6,6 +7,10 @@ import { useBudget } from "./hooks/useBudget";
 
 function App() { 
   const { state } = useBudget();  
+
+  useEffect(() => {    
+    localStorage.setItem('expenses', JSON.stringify(state.expenses))
+  }, [state.expenses])  
 
   return (
     <>

@@ -10,7 +10,7 @@ import ErrorMessage from './ErrorMessage';
 import type { DraftExpense, Value } from "../types";
 
 export default function ExpenseForm() {
-    const { dispatch, state } = useBudget();
+    const { dispatch, state, avaliableBudget } = useBudget();
     const [error, setError] = useState<boolean>(false);
     const [expense, setExpense] = useState<DraftExpense>({
         expenseName: '',
@@ -20,9 +20,7 @@ export default function ExpenseForm() {
     });
 
     useEffect(() => {
-        if(state.editingExpense) {
-            setExpense(state.editingExpense);
-        }
+        if(state.editingExpense) setExpense(state.editingExpense);
     }, [state.editingExpense]);
 
     const handleChangeDate = (value: Value) => {
@@ -38,19 +36,28 @@ export default function ExpenseForm() {
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const isSomeFieldEmpty = Object.values(expense).some(value => value === '' || value === null || value === 0);        
-        if(isSomeFieldEmpty) {
-            
+        if(isSomeFieldEmpty) {            
             setError(true);
             return;
         }
         setError(false);
+
+        if(state.editingExpense) editExpense();
+        else createNewExpense();
+    }
+
+    const createNewExpense = () => {
         dispatch({ type: 'ADD_EXPENSE', payload: { expense } });
         dispatch({ type: 'HIDE_MODAL' });
     }
 
+    const editExpense = () => {        
+        dispatch({ type: 'UPDATE_EXPENSE', payload: { expense: { ...expense, id: state.editingExpense!.id } } });        
+    }
+
     return (        
         <form className="space-y-5" onSubmit={ handleSubmit }>
-            <legend className="uppercase text-center font-black text-2xl border-b-4 py-2 border-blue-500">Nuevo gasto</legend>
+            <legend className="uppercase text-center font-black text-2xl border-b-4 py-2 border-blue-500">{ state.editingExpense ? 'Actualizar gasto' : 'Nuevo gasto' }</legend>
 
             { error && <ErrorMessage>Todos los campos son obligatorios</ErrorMessage> }
 
@@ -114,13 +121,14 @@ export default function ExpenseForm() {
             <input
                 type="submit"
                 className="bg-blue-600 cursor-pointer text-white p-2 w-full uppercase font-bold rounded-lg"
-                value="Registrar gasto"
+                disabled={avaliableBudget > expense.amount!}
+                value={ state.editingExpense ? 'Actualizar gasto' : 'Registrar gasto' }
             />
 
             <button                
                 type="button"
                 className="bg-red-600 cursor-pointer text-white p-2 w-full uppercase font-bold rounded-lg"
-                onClick={() => dispatch({ type: 'CANCEL_EDIT_EXPENSE' })}
+                onClick={() => dispatch({ type: 'HIDE_MODAL' })}
             >
                 Cancelar
             </button>
